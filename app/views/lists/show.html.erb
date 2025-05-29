@@ -1,0 +1,82 @@
+<!-- TEST MODAL - Add this right after the <div class="container"> line -->
+<div class="container">
+  <div class="d-flex justify-content-between align-items-center my-4">
+    <h1><%= @list.name %></h1>
+    <div>
+      <%= link_to "Add Movie", new_list_bookmark_path(@list), class: "btn btn-primary me-2" %>
+      <%= link_to "All Lists", lists_path, class: "btn btn-outline-secondary" %>
+    </div>
+  </div>
+
+  <% if @list.movies.any? %>
+    <div class="row">
+      <% @list.movies.each do |movie| %>
+        <div class="col-lg-4 col-md-6 mb-4">
+          <div class="card">
+            <img src="<%= movie.poster_url %>" class="card-img-top" alt="<%= movie.title %>">
+            <div class="card-body">
+              <h5 class="card-title"><%= movie.title %></h5>
+              <p class="card-text">
+                <small class="text-muted">⭐ <%= movie.rating %>/10</small>
+              </p>
+              <p class="card-text"><%= movie.overview %></p>
+              <% bookmark = @list.bookmarks.find { |b| b.movie == movie } %>
+              <% if bookmark %>
+                <p class="card-text">
+                  <strong>My note:</strong> "<%= bookmark.comment %>"
+                </p>
+                <div class="d-flex justify-content-between align-items-center mt-3">
+                  <small class="text-muted">Added to list</small>
+                  <button type="button"
+                    class="btn btn-outline-danger btn-sm remove-btn"
+                    data-bs-toggle="modal"
+                    data-bs-target="#removeModal"
+                    data-movie-title="<%= movie.title %>"
+                    data-movie-poster="<%= movie.poster_url %>"
+                    data-movie-comment="<%= bookmark.comment %>"
+                    data-list-name="<%= @list.name %>"
+                    data-bookmark-id="<%= bookmark.id %>">
+              Remove
+            </button>
+
+<!-- Hidden form for actual deletion -->
+<%= form_with model: bookmark, method: :delete, local: true, style: "display: none;", id: "remove-form-#{bookmark.id}" do |f| %>
+<% end %>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="text-center py-5">
+      <p class="lead">No movies in this list yet!</p>
+      <p>Start adding movies to see them here.</p>
+    </div>
+  <% end %>
+  <!-- Bootstrap Modal for Remove Confirmation -->
+<div class="modal fade" id="removeModal" tabindex="-1" aria-labelledby="removeModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="removeModalLabel">Remove Movie</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="d-flex align-items-center mb-3" id="modal-movie-info">
+          <!-- Movie details will be populated by JavaScript -->
+        </div>
+        <p id="modal-confirmation-text">Are you sure you want to remove this movie from the list?</p>
+        <p class="text-muted mb-0">
+          <small id="modal-comment-text">Your note will be displayed here</small>
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-danger" id="confirmRemove">Remove from List</button>
+      </div>
+    </div>
+  </div>
+</div>
+</div>

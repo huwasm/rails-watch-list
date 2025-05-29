@@ -42,3 +42,4 @@ ActiveRecord::Schema[7.1].define(version: 2025_05_29_143641) do
   add_foreign_key "bookmarks", "lists"
   add_foreign_key "bookmarks", "movies"
 end
+/Users/user/Desktop/code/huwasm/fullstack-challenges/05-Rails/04-Rails-mister-cocktail/02-Vue-Watch-List/explanation050402.md
